@@ -1,0 +1,10 @@
+{
+  "extends": ["standard", "standard-react"],
+  "env": {
+    "jest": true
+  },
+  "rules": {
+    "eol-last": 0,
+    "no-unused-vars": 1
+  }
+}
