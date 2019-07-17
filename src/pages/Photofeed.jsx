@@ -1,18 +1,22 @@
 import React from 'react'
-import { concat, clone } from 'lodash'
+import { concat, clone, findIndex, remove } from 'lodash'
 import Photo from '../components/Photo'
 import CheckBox from '../components/CheckBox'
 import InfiniteScroll from '../components/InfiniteScroll'
 import Message from '../components/Message'
 import { fetchPhoto } from '../../api'
+import * as localStorage from '../utils/localStorage'
 import css from './photofeed.scss'
 
 class Photofeed extends React.Component {
   constructor (props) {
     super(props)
 
+    this.SCRAP_ID = 'SCRAP'
+
     this.state = {
       photofeed: [],
+      scrappedFeed: [],
       page: 1,
       last: false,
       checked: false,
@@ -21,11 +25,44 @@ class Photofeed extends React.Component {
     }
 
     this.onCheckBoxClick = this.onCheckBoxClick.bind(this)
+    this.onScrapClick = this.onScrapClick.bind(this)
     this.loadMore = this.loadMore.bind(this)
+  }
+
+  componentDidMount () {
+    if (!localStorage.find(this.SCRAP_ID)) {
+      localStorage.set(this.SCRAP_ID, [])
+    }
+
+    const scrappedFeed = []
+
+    localStorage.find(this.SCRAP_ID)
+      .map(feed => scrappedFeed.push(feed.id))
+
+    this.setState({ scrappedFeed })
   }
 
   onCheckBoxClick (checked) {
     this.setState({ checked })
+  }
+
+  onScrapClick (id, isScrapped) {
+    const scrap = localStorage.find(this.SCRAP_ID)
+    const scrappedFeed = clone(this.state.scrappedFeed)
+
+    if (!isScrapped) {
+      const { photofeed } = this.state
+      const i = findIndex(photofeed, feed => feed.id === id)
+
+      scrap.push(photofeed[i])
+      scrappedFeed.push(photofeed[i].id)
+    } else {
+      remove(scrap, s => s.id === id)
+      remove(scrappedFeed, feed => feed === id)
+    }
+
+    localStorage.set(this.SCRAP_ID, scrap)
+    this.setState({ scrappedFeed })
   }
 
   loadMore () {
@@ -57,6 +94,7 @@ class Photofeed extends React.Component {
   render () {
     const {
       photofeed,
+      scrappedFeed,
       checked,
       last,
       error,
@@ -80,12 +118,15 @@ class Photofeed extends React.Component {
           >
             <div className={css.photofeed__photo__container}>
               {
-                photofeed.map(d => (
+                photofeed.map(feed => (
                   <Photo
-                    key={d.id}
-                    imageUrl={d.image_url}
-                    nickName={d.nickname}
-                    profileImageUrl={d.profile_image_url}
+                    key={feed.id}
+                    id={feed.id}
+                    imageUrl={feed.image_url}
+                    nickName={feed.nickname}
+                    profileImageUrl={feed.profile_image_url}
+                    isScrapped={scrappedFeed.indexOf(feed.id) !== -1}
+                    onScrapClick={this.onScrapClick}
                   />
                 ))
               }

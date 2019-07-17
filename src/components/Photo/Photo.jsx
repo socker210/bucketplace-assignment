@@ -12,9 +12,12 @@ class Photo extends React.Component {
 
   render () {
     const {
+      id,
       imageUrl,
       nickName,
-      profileImageUrl
+      profileImageUrl,
+      isScrapped,
+      onScrapClick
     } = this.props
 
     return (
@@ -22,7 +25,7 @@ class Photo extends React.Component {
         <div className={css.photo__container}>
           <div className={css.photo__header}>
             <div className={css.photo__header__container}>
-              <img src={profileImageUrl} />
+              <img src={profileImageUrl} alt='profile_pic' />
               <span>{nickName}</span>
             </div>
           </div>
@@ -31,10 +34,15 @@ class Photo extends React.Component {
               <img
                 ref={ref => this.image = ref}
                 data-src={imageUrl}
+                alt='room_pic'
               />
             </div>
             <div className={css.photo__image__scrap}>
-              <img src='icon/scrap_off.png' />
+              <img
+                src={isScrapped ? 'icon/scrap_on.png' : 'icon/scrap_off.png'}
+                alt='scrap'
+                onClick={() => onScrapClick(id, isScrapped)}
+              />
             </div>
           </div>
         </div>
@@ -44,6 +52,10 @@ class Photo extends React.Component {
 }
 
 Photo.propTypes = {
+  /**
+   * ID
+   */
+  id: PropTypes.number.isRequired,
   /**
    * Image
    */
@@ -55,7 +67,15 @@ Photo.propTypes = {
   /**
    * Profile image
    */
-  profileImageUrl: PropTypes.string.isRequired
+  profileImageUrl: PropTypes.string.isRequired,
+  /**
+   * Is scrapped?
+   */
+  isScrapped: PropTypes.bool.isRequired,
+  /**
+   * Scrap click listener
+   */
+  onScrapClick: PropTypes.func.isRequired
 }
 
 export default Photo
