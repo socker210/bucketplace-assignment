@@ -91,15 +91,71 @@ class Photofeed extends React.Component {
     })
   }
 
-  render () {
+  renderInfiniteScrollPhotofeed () {
     const {
       photofeed,
       scrappedFeed,
-      checked,
       last,
       error,
       errMessage
     } = this.state
+
+    return (
+      <InfiniteScroll
+        hasMore={!last}
+        loadMore={this.loadMore}
+        loading={<Message message='로딩중 입니다 ...' key={0} />}
+      >
+        <div className={css.photofeed__photo__container}>
+          {
+            photofeed.map(feed => (
+              <Photo
+                key={feed.id}
+                id={feed.id}
+                imageUrl={feed.image_url}
+                nickName={feed.nickname}
+                profileImageUrl={feed.profile_image_url}
+                isScrapped={scrappedFeed.indexOf(feed.id) !== -1}
+                onScrapClick={this.onScrapClick}
+              />
+            ))
+          }
+        </div>
+        { error && <Message message={errMessage} /> }
+      </InfiniteScroll>
+    )
+  }
+
+  renderScrappedPhotofeed () {
+    const scrap = localStorage.find(this.SCRAP_ID)
+
+    if (!scrap.length) {
+      return (
+        <Message message='스크랩된 것이 없습니다' />
+      )
+    }
+
+    return (
+      <div className={css.photofeed__photo__container}>
+        {
+          scrap.map(feed => (
+            <Photo
+              key={feed.id}
+              id={feed.id}
+              imageUrl={feed.image_url}
+              nickName={feed.nickname}
+              profileImageUrl={feed.profile_image_url}
+              isScrapped
+              onScrapClick={this.onScrapClick}
+            />
+          ))
+        }
+      </div>
+    )
+  }
+
+  render () {
+    const { checked } = this.state
 
     return (
       <section className={css.photofeed} role='feed'>
@@ -111,28 +167,7 @@ class Photofeed extends React.Component {
               onClick={this.onCheckBoxClick}
             />
           </div>
-          <InfiniteScroll
-            hasMore={!last}
-            loadMore={this.loadMore}
-            loading={<Message message='로딩중 입니다 ...' key={0} />}
-          >
-            <div className={css.photofeed__photo__container}>
-              {
-                photofeed.map(feed => (
-                  <Photo
-                    key={feed.id}
-                    id={feed.id}
-                    imageUrl={feed.image_url}
-                    nickName={feed.nickname}
-                    profileImageUrl={feed.profile_image_url}
-                    isScrapped={scrappedFeed.indexOf(feed.id) !== -1}
-                    onScrapClick={this.onScrapClick}
-                  />
-                ))
-              }
-            </div>
-            { error && <Message message={errMessage} /> }
-          </InfiniteScroll>
+          {checked ? this.renderScrappedPhotofeed() : this.renderInfiniteScrollPhotofeed() }
         </div>
       </section>
     )
