@@ -1,14 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-
-const App = () => (
-  <>
-    <div>Hello world!</div>
-  </>
-)
+import Photofeed from './pages/Photofeed'
+import './app.scss'
 
 const container = document.createElement('div')
 
 document.body.appendChild(container)
 
-ReactDOM.render(<App />, container)
+ReactDOM.render(<Photofeed />, container)

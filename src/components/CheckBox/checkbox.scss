@@ -1,0 +1,17 @@
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  i {
+    font-size: 2rem;
+    color: #35C5F0;
+  }
+
+  span {
+    padding-left: 10px;
+    font-size: .85rem;
+    color: rgba(0, 0, 0, 0.74);
+    user-select: none;
+  }
+}

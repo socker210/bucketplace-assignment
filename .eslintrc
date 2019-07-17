@@ -5,6 +5,8 @@
   },
   "rules": {
     "eol-last": 0,
+    "no-return-assign": 0,
+    "handle-callback-err": 0,
     "no-unused-vars": 1
   }
 }

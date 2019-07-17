@@ -1,0 +1,27 @@
+@import '../vars.scss';
+
+.photofeed {
+  padding: 60px;
+
+  @media screen and (max-width: $xsmall) {
+    padding: 30px;
+  }
+}
+
+.photofeed__container {
+  padding: 10px;
+  max-width: 1256px;
+  margin: 0 auto;
+  border: 1px solid #CCCCCC;
+  border-radius: 6px;
+}
+
+.photofeed__scrap__container {
+  padding: 10px;
+  text-align: left;
+}
+
+.photofeed__photo__container {
+  display: flex;
+  flex-wrap: wrap;
+}

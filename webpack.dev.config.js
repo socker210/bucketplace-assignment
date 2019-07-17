@@ -5,9 +5,10 @@ module.exports = {
   mode: 'development',
   entry: path.resolve(__dirname, 'src', 'App.jsx'),
   resolve: {
-    extensions: ['.js', 'jsx', '.json', '.scss']
+    extensions: ['.js', '.jsx', '.json', '.scss']
   },
   devServer: {
+    contentBase: path.resolve(__dirname, 'static'),
     port: 3000,
     host: '0.0.0.0',
     historyApiFallback: true
