@@ -4,10 +4,20 @@ import css from './photo.scss'
 
 class Photo extends React.Component {
   componentDidMount () {
+    this._mount = true
+
     const url = this.image.getAttribute('data-src')
 
     this.image.setAttribute('src', url)
-    this.image.addEventListener('load', e => this.image.classList.add(css.loaded))
+    this.image.addEventListener('load', e => {
+      if (this._mount) {
+        this.image.classList.add(css.loaded)
+      }
+    })
+  }
+
+  componentWillUnmount () {
+    this._mount = false
   }
 
   render () {
