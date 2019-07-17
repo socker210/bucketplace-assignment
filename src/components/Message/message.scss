@@ -1,0 +1,19 @@
+@import '../../vars.scss';
+
+.message {
+  height: 30vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  span {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.74);
+
+    @media screen and (max-width: $small) {
+      font-size: 1.2rem;
+    }
+  }
+}

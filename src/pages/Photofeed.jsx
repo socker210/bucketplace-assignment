@@ -1,6 +1,9 @@
 import React from 'react'
+import { concat, clone } from 'lodash'
 import Photo from '../components/Photo'
 import CheckBox from '../components/CheckBox'
+import InfiniteScroll from '../components/InfiniteScroll'
+import Message from '../components/Message'
 import { fetchPhoto } from '../../api'
 import css from './photofeed.scss'
 
@@ -9,31 +12,56 @@ class Photofeed extends React.Component {
     super(props)
 
     this.state = {
-      data: [],
-      checked: false
+      photofeed: [],
+      page: 1,
+      last: false,
+      checked: false,
+      error: false,
+      errMessage: undefined
     }
 
     this.onCheckBoxClick = this.onCheckBoxClick.bind(this)
-  }
-
-  componentDidMount () {
-    fetchPhoto({
-      page: 1,
-      success: res => {
-        this.setState({ data: res.data })
-      },
-      error: err => {
-        console.log(err)
-      }
-    })
+    this.loadMore = this.loadMore.bind(this)
   }
 
   onCheckBoxClick (checked) {
     this.setState({ checked })
   }
 
+  loadMore () {
+    let { page } = this.state
+    let photofeed = clone(this.state.photofeed)
+
+    fetchPhoto({
+      page: page,
+      success: res => {
+        photofeed = concat(photofeed, res.data)
+        page = res.data.length ? page + 1 : page
+
+        this.setState({
+          photofeed,
+          page,
+          last: !res.data.length
+        })
+      },
+      error: err => {
+        this.setState({
+          last: true,
+          error: true,
+          errMessage: err.message
+        })
+      }
+    })
+  }
+
   render () {
-    const { data, checked } = this.state
+    const {
+      photofeed,
+      checked,
+      last,
+      error,
+      errMessage
+    } = this.state
 
     return (
       <section className={css.photofeed} role='feed'>
@@ -45,18 +73,25 @@ class Photofeed extends React.Component {
               onClick={this.onCheckBoxClick}
             />
           </div>
-          <div className={css.photofeed__photo__container}>
-            {
-              data.map(d => (
-                <Photo
-                  key={d.id}
-                  imageUrl={d.image_url}
-                  nickName={d.nickname}
-                  profileImageUrl={d.profile_image_url}
-                />
-              ))
-            }
-          </div>
+          <InfiniteScroll
+            hasMore={!last}
+            loadMore={this.loadMore}
+            loading={<Message message='로딩중 입니다 ...' key={0} />}
+          >
+            <div className={css.photofeed__photo__container}>
+              {
+                photofeed.map(d => (
+                  <Photo
+                    key={d.id}
+                    imageUrl={d.image_url}
+                    nickName={d.nickname}
+                    profileImageUrl={d.profile_image_url}
+                  />
+                ))
+              }
+            </div>
+            { error && <Message message={errMessage} /> }
+          </InfiniteScroll>
         </div>
       </section>
     )
