@@ -4,6 +4,7 @@ import Photo from '../components/Photo'
 import CheckBox from '../components/CheckBox'
 import InfiniteScroll from '../components/InfiniteScroll'
 import Message from '../components/Message'
+import NotificationContainer, { Toast } from '../components/Notification'
 import { fetchPhoto } from '../../api'
 import * as localStorage from '../utils/localStorage'
 import css from './photofeed.scss'
@@ -63,6 +64,8 @@ class Photofeed extends React.Component {
 
     localStorage.set(this.SCRAP_ID, scrap)
     this.setState({ scrappedFeed })
+
+    Toast(isScrapped ? '스크랩이 제거되었습니다' : '스크랩되었습니다')
   }
 
   loadMore () {
@@ -159,6 +162,7 @@ class Photofeed extends React.Component {
 
     return (
       <section className={css.photofeed} role='feed'>
+        <NotificationContainer />
         <div className={css.photofeed__container}>
           <div className={css.photofeed__scrap__container}>
             <CheckBox

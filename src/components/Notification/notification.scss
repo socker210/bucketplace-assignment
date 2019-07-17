@@ -1,0 +1,33 @@
+@import '../../vars.scss';
+
+.notification {
+  position: fixed;
+  right: 3vw;
+  bottom: 3vh;
+  z-index: 99999;
+}
+
+.notification__container {
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background-color: rgba(92, 184, 92, .8);
+  transform: translateX(calc(100% + 3vw));
+  transition: transform .3s ease;
+  cursor: default;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #FFFFFF;
+    user-select: none;
+
+    @media screen and (max-width: $small) {
+      font-size: .8rem;
+    }
+  }
+}
