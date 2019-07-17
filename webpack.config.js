@@ -1,8 +1,9 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const mode = process.env.NODE_ENV
 
 module.exports = {
-  mode: 'development',
+  mode: mode,
   entry: path.resolve(__dirname, 'src', 'App.jsx'),
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.scss']
@@ -12,6 +13,9 @@ module.exports = {
     port: 3000,
     host: '0.0.0.0',
     historyApiFallback: true
+  },
+  performance: {
+    hints: false
   },
   module: {
     rules: [{
