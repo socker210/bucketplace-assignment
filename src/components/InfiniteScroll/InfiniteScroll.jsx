@@ -41,7 +41,7 @@ class InfiniteScroll extends React.Component {
       hasMore
     } = this.props
 
-    if (!hasMore) return
+    if (!hasMore || this.debounce) return
 
     const pos = document.documentElement.offsetHeight - window.innerHeight - Math.max(document.documentElement.scrollTop, document.body.scrollTop)
 
